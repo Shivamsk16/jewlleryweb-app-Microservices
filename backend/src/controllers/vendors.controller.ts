@@ -37,7 +37,7 @@ export async function create(req: Request, res: Response) {
 }
 
 export async function detail(req: Request, res: Response) {
-  const id = Number(req.params.id);
+  const id = req.params.id;
   const vendor = await prisma.vendor.findUnique({
     where: { id },
     include: {
@@ -53,13 +53,13 @@ export async function detail(req: Request, res: Response) {
 }
 
 export async function update(req: Request, res: Response) {
-  const id = Number(req.params.id);
+  const id = req.params.id;
   const updated = await prisma.vendor.update({ where: { id }, data: req.body ?? {} });
   res.json(updated);
 }
 
 export async function balance(req: Request, res: Response) {
-  const id = Number(req.params.id);
+  const id = req.params.id;
   const balances = await computeVendorBalances();
   const found = balances.find((b) => b.vendorId === id);
   if (!found) return res.status(404).json({ message: "Not found" });

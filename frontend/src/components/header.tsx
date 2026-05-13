@@ -19,9 +19,9 @@ import { cn } from "@/lib/utils";
 import { formatDateTime } from "@/lib/utils";
 import { api, apiFetch } from "@/lib/api";
 
-type Me = { id: number; email: string; name: string; role: "ADMIN" | "USER" } | null;
+type Me = { id: string; email: string; name: string; role: "ADMIN" | "USER" } | null;
 type Notif = {
-  id: number;
+  id: string;
   type: string;
   title: string;
   message: string;

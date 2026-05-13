@@ -8,7 +8,7 @@ const COOKIE_DOMAIN = process.env.COOKIE_DOMAIN || undefined;
 export const COOKIE_NAME = "jewelflow_token";
 
 export type JWTPayload = {
-  id: number;
+  id: string;
   email: string;
   name: string;
   role: "ADMIN" | "USER";

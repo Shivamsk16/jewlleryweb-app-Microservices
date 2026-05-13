@@ -22,7 +22,7 @@ import { api } from "@/lib/api";
 
 export default function VendorDetailPage({ params }: { params: { id: string } }) {
   const { t } = useTranslation();
-  const id = Number(params.id);
+  const id = params.id;
 
   const detail = useQuery<any>({
     queryKey: ["vendor", id],

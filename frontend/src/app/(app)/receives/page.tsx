@@ -30,7 +30,7 @@ import { formatNumber, formatDate } from "@/lib/utils";
 import { api, apiFetch } from "@/lib/api";
 
 type Receive = {
-  id: number;
+  id: string;
   vendor: { name: string };
   issue: { material: string; purity: string; issuedWeight: number };
   itemName: string;
@@ -146,7 +146,7 @@ function ReceiveFormDialog({ open, onClose }: { open: boolean; onClose: () => vo
     enabled: open,
   });
 
-  const [issueId, setIssueId] = React.useState<number | null>(null);
+  const [issueId, setIssueId] = React.useState<string | null>(null);
   const [itemName, setItemName] = React.useState("");
   const [grossWeight, setGrossWeight] = React.useState("");
   const [stoneWeight, setStoneWeight] = React.useState("0");
@@ -220,7 +220,7 @@ function ReceiveFormDialog({ open, onClose }: { open: boolean; onClose: () => vo
             <Label>Issue Entry (to track consumption)</Label>
             <Select
               value={issueId ?? ""}
-              onChange={(e) => setIssueId(Number(e.target.value))}
+              onChange={(e) => setIssueId(e.target.value || null)}
               required
             >
               <option value="">Select original issue...</option>

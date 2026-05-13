@@ -30,8 +30,8 @@ import { formatNumber, formatDate } from "@/lib/utils";
 import { api, apiFetch } from "@/lib/api";
 
 type Issue = {
-  id: number;
-  vendorId: number;
+  id: string;
+  vendorId: string;
   vendor: { name: string };
   material: string;
   purity: string;
@@ -186,7 +186,7 @@ function IssueFormDialog({ open, onClose }: { open: boolean; onClose: () => void
     enabled: open,
   });
 
-  const [vendorId, setVendorId] = React.useState<number | null>(null);
+  const [vendorId, setVendorId] = React.useState<string | null>(null);
   const [material, setMaterial] = React.useState<"GOLD" | "SILVER">("GOLD");
   const [purity, setPurity] = React.useState("22K");
   const [issuedWeight, setIssuedWeight] = React.useState("");
@@ -254,7 +254,7 @@ function IssueFormDialog({ open, onClose }: { open: boolean; onClose: () => void
             <Label>{t("material.vendor")}</Label>
             <Select
               value={vendorId ?? ""}
-              onChange={(e) => setVendorId(Number(e.target.value))}
+              onChange={(e) => setVendorId(e.target.value || null)}
               required
             >
               <option value="">Select vendor...</option>

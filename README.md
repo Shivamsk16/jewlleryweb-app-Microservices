@@ -19,7 +19,7 @@ JewelFlow is a jewellery raw-material & vendor management system. This repositor
 ```
 ┌────────────────────────┐        HTTPS / fetch + cookie         ┌──────────────────────────┐
 │   frontend  :3000      │ ───────────────────────────────────▶  │   backend  :4000         │
-│   Next.js (App Router) │ ◀───────  JSON + Set-Cookie  ─────── │   Express + Prisma       │
+│   Next.js (App Router) │ ◀───────  JSON + Set-Cookie  ───────  │   Express + Prisma       │
 │                        │                                        │                          │
 │   - Pages, components  │                                        │   - REST routes /api/*   │
 │   - i18n (en/hi)       │                                        │   - JWT + bcrypt auth    │
@@ -199,20 +199,48 @@ backend/
 ```bash
 PORT=4000
 NODE_ENV=development
-DATABASE_URL="file:./dev.db"               # or postgresql://…
+
+# Supabase Postgres
+DATABASE_URL="postgresql://postgres:[YOUR-PASSWORD]@db.[YOUR-PROJECT-REF].supabase.co:5432/postgres?pgbouncer=true"
+DIRECT_URL="postgresql://postgres:[YOUR-PASSWORD]@db.[YOUR-PROJECT-REF].supabase.co:5432/postgres"
+
+# Supabase service keys (used by @supabase/supabase-js for admin operations)
+SUPABASE_URL="https://[YOUR-PROJECT-REF].supabase.co"
+SUPABASE_SERVICE_ROLE_KEY="your-service-role-key"
+SUPABASE_ANON_KEY="your-anon-key"
+
 JWT_SECRET="please-change-me"
 JWT_EXPIRES_IN="30m"
-FRONTEND_URL="http://localhost:3000"       # CORS allow-list
+FRONTEND_URL="http://localhost:3000"
 COOKIE_DOMAIN="localhost"                  # ".yourdomain.com" in prod
 ```
 
-### Switching to PostgreSQL
-1. Edit `backend/prisma/schema.prisma`:
-   ```prisma
-   datasource db { provider = "postgresql"; url = env("DATABASE_URL") }
+### Connecting to Supabase
+
+The backend is wired for Supabase Postgres out of the box.
+
+1. **Create a project** at [supabase.com](https://supabase.com) and grab the **connection strings** from `Project Settings → Database`:
+   - `DATABASE_URL` → use the **Connection pooling** URI (note: Supabase's pooler typically runs on port `6543`; the placeholder uses `5432` so update if needed). Append `?pgbouncer=true`.
+   - `DIRECT_URL` → use the **URI** under "Connection string" (port `5432`, no `pgbouncer` flag). Prisma needs this for migrations.
+2. Grab the API keys from `Project Settings → API`:
+   - `SUPABASE_URL` (Project URL)
+   - `SUPABASE_ANON_KEY` (public — fine to expose)
+   - `SUPABASE_SERVICE_ROLE_KEY` (secret — backend only, bypasses RLS)
+3. Paste them into `backend/.env`.
+4. Run the migration + seed:
+   ```bash
+   cd backend
+   npm install
+   npx prisma generate
+   npx prisma migrate dev --name init     # or: npx prisma db push
+   npm run db:seed
    ```
-2. Update `DATABASE_URL` in `backend/.env`.
-3. `npm --prefix backend run db:migrate`.
+
+The Supabase admin SDK is also available at `backend/src/lib/supabase.ts` for any non-relational work (Storage, Auth admin, RPC calls, etc.). Day-to-day relational queries should still go through Prisma.
+
+### ID format note
+
+The schema uses `String @id @default(uuid())` — IDs are UUIDs everywhere. The frontend and backend types are aligned (`vendorId: string`, etc.). If you previously had any code or external integrations that assumed integer IDs, you'll need to update them.
 
 ### REST endpoints (all under `/api`)
 Identical to the monolith — only the host changes from `:3000/api/...` to `:4000/api/...`.

@@ -21,9 +21,11 @@ export async function list(req: Request, res: Response) {
   const where: any = { isDeleted: false };
   if (material && material !== "ALL") where.material = material;
   if (search) {
+    // mode: "insensitive" preserves the case-insensitive search behavior we
+    // had on SQLite. Postgres `contains` is case-sensitive by default.
     where.OR = [
-      { vendorName: { contains: search } },
-      { invoiceNo: { contains: search } },
+      { vendorName: { contains: search, mode: "insensitive" } },
+      { invoiceNo: { contains: search, mode: "insensitive" } },
     ];
   }
   if (from || to) {
@@ -67,7 +69,7 @@ export async function create(req: Request, res: Response) {
 }
 
 export async function update(req: Request, res: Response) {
-  const id = Number(req.params.id);
+  const id = req.params.id;
   const body = req.body ?? {};
   const data: any = {};
   if (body.material) data.material = body.material;
@@ -89,7 +91,7 @@ export async function update(req: Request, res: Response) {
 }
 
 export async function softDelete(req: Request, res: Response) {
-  const id = Number(req.params.id);
+  const id = req.params.id;
   await prisma.rawMaterialPurchase.update({
     where: { id },
     data: { isDeleted: true },

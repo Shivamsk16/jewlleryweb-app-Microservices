@@ -4,8 +4,8 @@ import { prisma } from "../lib/prisma";
 import { detectOverdue } from "../lib/business";
 
 const receiveSchema = z.object({
-  vendorId: z.number().int().positive(),
-  issueId: z.number().int().positive(),
+  vendorId: z.string().uuid(),
+  issueId: z.string().uuid(),
   itemName: z.string().min(1),
   grossWeight: z.number().nonnegative(),
   stoneWeight: z.number().nonnegative().default(0),
@@ -17,7 +17,7 @@ const receiveSchema = z.object({
 export async function list(req: Request, res: Response) {
   const { vendorId } = req.query as Record<string, string | undefined>;
   const where: any = {};
-  if (vendorId) where.vendorId = Number(vendorId);
+  if (vendorId) where.vendorId = vendorId;
   const items = await prisma.jewelleryReceive.findMany({
     where,
     include: { vendor: true, issue: true },
@@ -77,7 +77,7 @@ export async function create(req: Request, res: Response) {
 }
 
 export async function detail(req: Request, res: Response) {
-  const id = Number(req.params.id);
+  const id = req.params.id;
   const item = await prisma.jewelleryReceive.findUnique({
     where: { id },
     include: { vendor: true, issue: true },

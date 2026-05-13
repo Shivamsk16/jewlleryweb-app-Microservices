@@ -30,7 +30,7 @@ import { formatINR, formatNumber, formatDate, purityToFraction } from "@/lib/uti
 import { api, apiFetch } from "@/lib/api";
 
 type Purchase = {
-  id: number;
+  id: string;
   material: string;
   purity: string;
   grossWeight: number;
@@ -80,7 +80,7 @@ export default function MaterialsPage() {
   });
 
   const del = useMutation({
-    mutationFn: (id: number) => apiFetch(`/api/materials/${id}`, { method: "DELETE" }),
+    mutationFn: (id: string) => apiFetch(`/api/materials/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["materials"] });
       qc.invalidateQueries({ queryKey: ["stock"] });

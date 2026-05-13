@@ -18,7 +18,7 @@ export async function unreadCount(_req: Request, res: Response) {
 }
 
 export async function markRead(req: Request, res: Response) {
-  const id = Number(req.params.id);
+  const id = req.params.id;
   await prisma.notification.update({ where: { id }, data: { isRead: true } });
   res.json({ ok: true });
 }

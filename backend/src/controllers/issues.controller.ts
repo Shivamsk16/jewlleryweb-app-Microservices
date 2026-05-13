@@ -4,7 +4,7 @@ import { prisma } from "../lib/prisma";
 import { detectOverdue, getAvailableStock } from "../lib/business";
 
 const issueSchema = z.object({
-  vendorId: z.number().int().positive(),
+  vendorId: z.string().uuid(),
   material: z.enum(["GOLD", "SILVER"]),
   purity: z.string(),
   issuedWeight: z.number().positive(),
@@ -19,7 +19,7 @@ export async function list(req: Request, res: Response) {
 
   const where: any = {};
   if (status && status !== "ALL") where.status = status;
-  if (vendorId) where.vendorId = Number(vendorId);
+  if (vendorId) where.vendorId = vendorId;
 
   const items = await prisma.materialIssue.findMany({
     where,
@@ -58,7 +58,7 @@ export async function create(req: Request, res: Response) {
 }
 
 export async function detail(req: Request, res: Response) {
-  const id = Number(req.params.id);
+  const id = req.params.id;
   const issue = await prisma.materialIssue.findUnique({
     where: { id },
     include: { vendor: true, receives: true },
@@ -68,7 +68,7 @@ export async function detail(req: Request, res: Response) {
 }
 
 export async function update(req: Request, res: Response) {
-  const id = Number(req.params.id);
+  const id = req.params.id;
   const body = req.body ?? {};
   const data: any = {};
   if (body.expectedReturn) data.expectedReturn = new Date(body.expectedReturn);

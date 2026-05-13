@@ -63,7 +63,7 @@ export async function getAvailableStock(material: string, purity: string): Promi
 // Vendor balance
 // =====================================================
 export type VendorBalance = {
-  vendorId: number;
+  vendorId: string;
   vendorName: string;
   issued: number;
   received: number;

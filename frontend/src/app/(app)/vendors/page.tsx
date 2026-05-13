@@ -22,7 +22,7 @@ import {
 import { api, apiFetch } from "@/lib/api";
 
 type Vendor = {
-  id: number;
+  id: string;
   name: string;
   nameHi?: string | null;
   contact?: string | null;
