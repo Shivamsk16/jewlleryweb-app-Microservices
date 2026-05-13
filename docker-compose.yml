@@ -1,0 +1,49 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: jewelflow-backend
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      # SQLite db file lives inside the container's /app/prisma volume.
+      DATABASE_URL: "file:./dev.db"
+      JWT_SECRET: "${JWT_SECRET:-dev-secret-change-me-in-production}"
+      JWT_EXPIRES_IN: "30m"
+      FRONTEND_URL: "http://localhost:3000"
+      # Empty inside Docker — when the browser talks to localhost the cookie
+      # is shared across :3000 and :4000 anyway. For prod set ".yourdomain.com".
+      COOKIE_DOMAIN: "localhost"
+    volumes:
+      - backend-db:/app/prisma
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:4000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        # Bake API URL into the browser bundle. Override for prod deploys.
+        NEXT_PUBLIC_API_URL: "http://localhost:4000"
+    container_name: jewelflow-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_API_URL: "http://localhost:4000"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  backend-db:
