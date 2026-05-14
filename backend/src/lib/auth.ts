@@ -4,7 +4,7 @@ import type { Request, Response } from "express";
 
 const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-change-me";
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "30m";
-const COOKIE_DOMAIN = process.env.COOKIE_DOMAIN || undefined;
+// const COOKIE_DOMAIN = process.env.COOKIE_DOMAIN || undefined;
 export const COOKIE_NAME = "jewelflow_token";
 
 export type JWTPayload = {
