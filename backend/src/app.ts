@@ -11,26 +11,47 @@ const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
 export function createApp() {
   const app = express();
 
-  app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
+  // Security middleware
+  app.use(
+    helmet({
+      crossOriginResourcePolicy: { policy: "cross-origin" },
+    }),
+  );
+
+  // CORS configuration
   app.use(
     cors({
-      // Reflect the configured frontend origin and allow cookies.
-      // For multiple frontends, replace with a function that checks an allow-list.
       origin: FRONTEND_URL,
       credentials: true,
     }),
   );
+
+  // Body parser
   app.use(express.json({ limit: "2mb" }));
+
+  // Cookie parser
   app.use(cookieParser());
+
+  // Logger
   if (process.env.NODE_ENV !== "test") {
     app.use(morgan("dev"));
   }
 
-  // All API routes are mounted under /api so the frontend's
-  // NEXT_PUBLIC_API_URL + "/api/..." paths line up 1:1 with the old monolith.
+  // ✅ Root / Health Check Route
+  app.get("/", (req, res) => {
+    res.status(200).json({
+      success: true,
+      message: "JewelFlow API running 🚀",
+    });
+  });
+
+  // API Routes
   app.use("/api", routes);
 
+  // 404 Handler
   app.use(notFound);
+
+  // Global Error Handler
   app.use(errorHandler);
 
   return app;
