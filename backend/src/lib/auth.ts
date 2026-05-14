@@ -37,7 +37,7 @@ export function verifyToken(token: string): JWTPayload | null {
 export function setAuthCookie(res: Response, token: string) {
   res.cookie(COOKIE_NAME, token, {
     httpOnly: true,
-    sameSite: "lax",
+    sameSite: "none",
     secure: process.env.NODE_ENV === "production",
     path: "/",
     maxAge: 60 * 30 * 1000, // 30 minutes (ms)
@@ -50,6 +50,8 @@ export function setAuthCookie(res: Response, token: string) {
 export function clearAuthCookie(res: Response) {
   res.cookie(COOKIE_NAME, "", {
     httpOnly: true,
+    sameSite: "none",
+    secure: process.env.NODE_ENV === "production",
     path: "/",
     maxAge: 0,
     domain: COOKIE_DOMAIN,
