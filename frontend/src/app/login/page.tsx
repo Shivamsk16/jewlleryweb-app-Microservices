@@ -45,6 +45,15 @@ function LoginInner() {
 
 const data = await r.json();
 
+
+console.log("LOGIN RESPONSE", data);
+
+localStorage.setItem("token", data.token);
+
+console.log("TOKEN SAVED");
+
+localStorage.setItem("user", JSON.stringify(data.user));
+
 localStorage.setItem("token", data.token);
 localStorage.setItem("user", JSON.stringify(data.user));
 
