@@ -37,18 +37,10 @@ export function verifyToken(token: string): JWTPayload | null {
 export function setAuthCookie(res: Response, token: string) {
   res.cookie(COOKIE_NAME, token, {
     httpOnly: true,
-
-    // REQUIRED for frontend/backend on different domains
     sameSite: "none",
-
-    // REQUIRED when sameSite is "none"
     secure: true,
-
     path: "/",
-
     maxAge: 60 * 30 * 1000,
-
-    domain: COOKIE_DOMAIN,
   });
 }
 
@@ -59,7 +51,6 @@ export function clearAuthCookie(res: Response) {
     secure: true,
     path: "/",
     maxAge: 0,
-    domain: COOKIE_DOMAIN,
   });
 }
 
