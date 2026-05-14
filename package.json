@@ -1,26 +1,11 @@
 {
-  "name": "jewelflow-monorepo",
-  "version": "1.0.0",
-  "private": true,
-  "description": "JewelFlow — split into separate frontend (Next.js) and backend (Express + Prisma) services",
-  "scripts": {
-    "install:all": "npm install && npm --prefix backend install && npm --prefix frontend install",
-    "dev:backend": "npm --prefix backend run dev",
-    "dev:frontend": "npm --prefix frontend run dev",
-    "dev": "concurrently -n backend,frontend -c blue,magenta \"npm:dev:backend\" \"npm:dev:frontend\"",
-    "build:backend": "npm --prefix backend run build",
-    "build:frontend": "npm --prefix frontend run build",
-    "build": "npm run build:backend && npm run build:frontend",
-    "start:backend": "npm --prefix backend run start",
-    "start:frontend": "npm --prefix frontend run start",
-    "start": "concurrently -n backend,frontend -c blue,magenta \"npm:start:backend\" \"npm:start:frontend\"",
-    "db:setup": "npm --prefix backend run setup",
-    "db:seed": "npm --prefix backend run db:seed",
-    "db:reset": "npm --prefix backend run db:reset",
-    "docker:up": "docker compose up --build",
-    "docker:down": "docker compose down"
-  },
   "devDependencies": {
-    "concurrently": "^9.1.0"
+    "@types/bcryptjs": "^2.4.6",
+    "@types/cookie-parser": "^1.4.10",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/morgan": "^1.9.10",
+    "@types/node": "^25.7.0"
   }
 }
