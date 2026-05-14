@@ -39,12 +39,19 @@ function LoginInner() {
         body: { email, password },
       });
       if (!r.ok) {
-        setError(t("errors.loginFailed"));
-        return;
-      }
-      const redirect = search?.get("redirect") || "/dashboard";
-      router.push(redirect);
-      router.refresh();
+  setError(t("errors.loginFailed"));
+  return;
+}
+
+const data = await r.json();
+
+localStorage.setItem("token", data.token);
+localStorage.setItem("user", JSON.stringify(data.user));
+
+const redirect = search?.get("redirect") || "/dashboard";
+
+router.push(redirect);
+router.refresh();
     } finally {
       setLoading(false);
     }
