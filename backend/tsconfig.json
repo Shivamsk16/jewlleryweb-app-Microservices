@@ -11,6 +11,8 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "moduleResolution": "node",
+     // ✅ REQUIRED
+    "ignoreDeprecations": "6.0",
     "allowSyntheticDefaultImports": true,
     "declaration": false,
     "sourceMap": true,
